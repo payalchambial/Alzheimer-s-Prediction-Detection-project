@@ -1,0 +1,288 @@
+Early-stage Alzheimer's Disease Prediction System
+1. Introduction
+Alzheimer’s disease is a progressive neurological disorder that gradually affects memory, 
+thinking skills, behavior, and the ability to perform daily activities. It is one of the most 
+common causes of dementia among older adults. Early detection of Alzheimer’s disease is 
+extremely important because timely diagnosis can help in slowing disease progression, 
+providing better treatment planning, and improving patient care.
+
+This project focuses on developing a Machine Learning based prediction system that can 
+identify the possibility of early-stage Alzheimer’s disease using patient medical parameters. 
+The system is implemented as a web application using Streamlit, making it user-friendly 
+and accessible for healthcare screening purposes.
+2. Objective
+The primary objective of this project is to design and implement a predictive model 
+that can classify whether a patient has early-stage Alzheimer’s disease based on medical data.
+
+The specific objectives include:
+• To collect and preprocess medical dataset.
+• To implement Logistic Regression for binary classification.
+• To evaluate model performance using accuracy and ROC curve.
+• To build an interactive web interface using Streamlit.
+• To allow users to input patient details and receive instant prediction results.
+3. Dataset Description
+The dataset used in this project contains patient-related medical attributes such as:
+• Age – Age of the patient.
+• Gender – Male or Female.
+• MMSE Score – Mini-Mental State Examination score used to measure cognitive function.
+• Brain Volume – Normalized brain volume measurement.
+• Alzheimer – Target variable (0 = No Alzheimer, 1 = Alzheimer).
+
+The dataset is stored in CSV format. Since real-world medical datasets may contain 
+missing values, mean imputation is applied to handle missing data. The dataset represents 
+a supervised learning problem with binary classification output.
+4. Tools and Technologies Used
+The following tools and technologies are used in this project:
+
+• Python – Programming language used for development.
+• Pandas – For data manipulation and analysis.
+• NumPy – For numerical computations.
+• Scikit-learn – For machine learning model implementation.
+• Streamlit – For building interactive web application.
+• Matplotlib & Seaborn – For data visualization.
+• OpenCV – For MRI image handling and display.
+
+These technologies collectively help in data preprocessing, model training, evaluation, 
+and application deployment.
+5. Data Preprocessing and Augmentation
+Data preprocessing is a crucial step in machine learning. The following preprocessing 
+steps are performed:
+
+• Handling Missing Values – Missing numerical values are replaced using mean imputation.
+• Encoding Categorical Variables – Gender is encoded using LabelEncoder.
+• Feature Scaling – StandardScaler is used to normalize feature values for better model performance.
+• Train-Test Split – Dataset is divided into training (75%) and testing (25%) sets.
+
+Since this project mainly uses structured tabular data, data augmentation is not applied. 
+However, the application includes MRI image upload and visualization functionality 
+for future extension toward image-based deep learning models.
+6. Model Details
+Logistic Regression is used as the machine learning algorithm for this project. 
+It is a supervised learning algorithm suitable for binary classification problems.
+
+Logistic Regression works by applying a sigmoid function to predict probability values 
+between 0 and 1. If the probability is greater than 0.5, the output class is predicted as 1 
+(Alzheimer detected), otherwise 0 (No Alzheimer).
+
+The model is simple, efficient, and interpretable, making it suitable for healthcare-related 
+prediction systems.
+7. Model Compilation
+The model is initialized using the LogisticRegression() function from Scikit-learn. 
+Compilation in Scikit-learn involves fitting the model to the training data using:
+
+model.fit(X_train, y_train)
+
+This step allows the model to learn patterns and relationships between input features 
+and the target variable.
+8. Model Training
+The dataset is split into training and testing sets using train_test_split(). 
+The model is trained on 75% of the dataset and tested on the remaining 25%.
+
+During training, the model learns the relationship between features 
+(Age, Gender, MMSE Score, Brain Volume) and the target variable (Alzheimer). 
+After training, predictions are made on test data to evaluate performance.
+9. Results and Performance
+The model performance is evaluated using:
+
+• Accuracy Score – Measures the percentage of correct predictions.
+• ROC Curve – Evaluates classification performance across different thresholds.
+• AUC Score – Measures the area under the ROC curve.
+
+The obtained accuracy demonstrates that the model can reasonably classify 
+early-stage Alzheimer’s cases. ROC curve analysis further validates 
+the predictive performance of the system.
+10. Application
+The developed application can be used for early screening purposes in healthcare 
+environments. Doctors or healthcare professionals can input patient details and 
+receive an instant prediction result.
+
+Although it is not a replacement for medical diagnosis, it can act as a supportive 
+decision-making tool for preliminary assessment of Alzheimer’s risk.
+11. Future Scope
+The project can be extended in several ways:
+
+• Implement Deep Learning models such as Convolutional Neural Networks (CNN) 
+  for MRI image-based classification.
+• Increase dataset size to improve model accuracy.
+• Deploy the application on cloud platforms such as AWS or Heroku.
+• Integrate real-time hospital databases.
+• Add more medical parameters such as genetic data and biomarkers.
+
+
+2. Streamlit-Based Web Application Interface
+
+The web application interface is developed using Streamlit. It provides an interactive and 
+user-friendly environment for users to input patient details and obtain prediction results.
+
+The interface contains the following components:
+
+• Title Section – Displays the application title using st.title().
+• Header Section – Guides users to enter patient details.
+• Input Fields –
+   - Age (number_input)
+   - Gender (selectbox)
+   - MMSE Score (number_input)
+   - Brain Volume (number_input)
+
+• Predict Button – When clicked, the model predicts whether the patient has early-stage 
+  Alzheimer’s disease.
+
+• Result Display –
+   - st.error() displays warning if Alzheimer is detected.
+   - st.success() displays confirmation if no Alzheimer is detected.
+
+• Visualization Section –
+   - Checkbox to display Alzheimer distribution graph.
+   - Checkbox to display ROC Curve for model performance evaluation.
+
+This interface ensures simplicity, clarity, and ease of use, making it suitable for healthcare 
+screening and demonstration purposes.
+
+3. How to Run the Application
+
+Step 1: Install required libraries:
+pip install streamlit pandas numpy scikit-learn matplotlib seaborn opencv-python
+
+Step 2: Save the file as alzheimers_app.py
+
+Step 3: Run the application using:
+streamlit run alzheimers_app.py
+
+Step 4: Open the provided local URL in your browser to access the web interface.
+
+
+Code
+# alzheimers_app.py
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import cv2
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, roc_curve, auc
+
+# Load and clean dataset
+data = pd.read_csv("C:/Users/hp/OneDrive/Documents/Python Scripts/alzheimers.csv")
+data.fillna(data.mean(), inplace=True)
+
+# Encode Gender if needed
+encoder = LabelEncoder()
+if data['Gender'].dtype == 'object':
+    data['Gender'] = encoder.fit_transform(data['Gender'])
+
+# Features and target
+X = data.drop('Alzheimer', axis=1)
+y = data['Alzheimer']
+
+# Feature scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.25, random_state=42
+)
+
+# Logistic Regression model
+lr_model = LogisticRegression()
+lr_model.fit(X_train, y_train)
+
+# Test accuracy
+y_pred = lr_model.predict(X_test)
+st.write("Logistic Regression Accuracy:", accuracy_score(y_test, y_pred))
+
+# App Title
+st.title("Alzheimer's Prediction App")
+st.header("Enter Patient Details:")
+
+# User inputs
+age = st.number_input("Age", min_value=30, max_value=100, value=65)
+gender = st.selectbox("Gender", ["Male", "Female"])
+mmse = st.number_input("MMSE Score", min_value=0.0, max_value=30.0, value=23.0)
+brain_volume = st.number_input("Brain Volume", min_value=0.0, max_value=1.0, value=0.72)
+
+# Encode gender
+gender_encoded = 1 if gender == "Male" else 0
+
+# Prepare data for prediction
+new_patient = np.array([[age, gender_encoded, mmse, brain_volume]])
+new_patient_scaled = scaler.transform(new_patient)
+
+# Prediction button
+if st.button("Predict"):
+    prediction = lr_model.predict(new_patient_scaled)
+    if prediction[0] == 1:
+        st.error("Alzheimer Detected (Early Stage)")
+    else:
+        st.success("No Alzheimer Detected")
+
+# MRI Image Section
+st.header(" Brain MRI Image")
+
+uploaded_file = st.file_uploader("Upload a brain MRI image (optional)", type=["jpg", "png", "jpeg"])
+if uploaded_file is not None:
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    uploaded_mri = cv2.imdecode(file_bytes, cv2.IMREAD_GRAYSCALE)
+    st.image(uploaded_mri, caption="Uploaded MRI", width=300, clamp=True)
+    
+    # Extract features from MRI
+    # Example: use mean intensity as brain_volume
+    brain_volume_from_mri = uploaded_mri.mean() / 255
+    st.write(f"Extracted Brain Volume from MRI: {brain_volume_from_mri:.2f}")
+    
+    # Optionally, add more MRI features
+    std_intensity = uploaded_mri.std() / 255
+    edges = cv2.Canny(uploaded_mri, 100, 200)
+    edge_density = edges.sum() / (uploaded_mri.shape[0] * uploaded_mri.shape[1])
+    
+    # Update patient input for prediction
+    new_patient = np.array([[age, gender_encoded, mmse, brain_volume_from_mri]])
+    new_patient_scaled = scaler.transform(new_patient)
+
+# Dataset and Plots
+if st.checkbox("Show Dataset"):
+    st.write(data.head())
+
+if st.checkbox("Show Alzheimer Distribution"):
+    fig, ax = plt.subplots()
+    sns.countplot(x='Alzheimer', data=data, ax=ax)
+    st.pyplot(fig)
+    
+if st.checkbox("Show ROC Curve with Patient"):
+    y_prob = lr_model.predict_proba(X_test)[:, 1]
+    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+    roc_auc = auc(fpr, tpr)
+
+    # Patient probability
+    patient_prob = lr_model.predict_proba(new_patient_scaled)[0][1]
+    
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr, color='darkorange', label=f'ROC Curve (AUC = {roc_auc:.2f})')
+    ax.plot([0,1], [0,1], linestyle='--', color='gray')
+    
+    # Highlight patient
+    ax.scatter(1-patient_prob, patient_prob, color='red', s=100, label="New Patient")
+    
+    ax.set_xlabel('False Positive Rate')
+    ax.set_ylabel('True Positive Rate')
+    ax.set_title('ROC Curve')
+    ax.legend()
+    st.pyplot(fig)
+
+
+
+
+
+12. Conclusion
+The Alzheimer’s Disease Prediction System successfully demonstrates the 
+application of Machine Learning in healthcare. By using Logistic Regression 
+and proper data preprocessing techniques, the system can predict early-stage 
+Alzheimer’s disease based on medical parameters.
+
+The Streamlit-based web application provides an interactive and user-friendly 
+interface, making the system practical for screening purposes. 
+This project highlights the importance of AI-driven solutions in modern healthcare systems.
+
